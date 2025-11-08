@@ -9,8 +9,8 @@ The aim of this repository is to provide a way to deploy and test qasmat quickly
 
 - Webapp is based on [Caddy webserver](https://caddyserver.com/)
 - Authentication with [Authelia](https://www.authelia.com/)
-- [Proxy](https://qasmat.veriqloud.fr/discovering/overview.html) server for data dispatch. Public idocker image is comming soon.
-- [Storage](https://qasmat.veriqloud.fr/discovering/overview.html) servers who store the shares of the data. Public idocker image is comming soon.
+- [Proxy](https://qasmat.veriqloud.fr/discovering/overview.html) server for data dispatch. Public docker image is comming soon.
+- [Storage](https://qasmat.veriqloud.fr/discovering/overview.html) servers who store the shares of the data. Public docker image is comming soon.
 - Databases are set to default Sqlite. PSQL is coming soon.
 
 ## Prerequisites
