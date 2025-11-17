@@ -1,5 +1,6 @@
 all:
   children:
+  # Provide IP adresses
     _master:
       hosts:
         proxy:
@@ -9,7 +10,8 @@ all:
         storage1:
           ansible_host: 
         storage2:
-          ansible_host: 
+          ansible_host:
+        storage3:
           ansible_host: 
         web:
           ansible_host: 
