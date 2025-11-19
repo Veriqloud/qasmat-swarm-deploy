@@ -1,10 +1,10 @@
 ---
-- name: Log in to GHCR
+- name: Log in to registry
   community.docker.docker_login:
-    registry_url: ghcr.io
-    username: "{{ github.username }}"
-    password: "{{ github.token }}"
-  when: (github.token is defined) and (github.username is defined)
+    registry_url: "{{ registry.url }}"
+    username: "{{ registry.username }}"
+    password: "{{ registry.token }}"
+  when: (registry.token is defined) and (registry.username is defined)
 - name: Pull images
   community.docker.docker_image:
     name: "{{ item }}"

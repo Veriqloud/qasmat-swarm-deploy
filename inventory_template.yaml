@@ -1,45 +1,46 @@
 all:
   children:
-  # Provide IP adresses
+    # Provide IP adresses
     _master:
       hosts:
         proxy:
-          ansible_host: 
+          ansible_host:
     _worker:
       hosts:
         storage1:
-          ansible_host: 
+          ansible_host:
         storage2:
           ansible_host:
         storage3:
-          ansible_host: 
+          ansible_host:
         web:
-          ansible_host: 
+          ansible_host:
   vars:
-    ansible_user: 
+    ansible_user:
     ansible_port: 22
-    github:
+    registry:
+      url: docker.io
       # In case you got access to private images; leave empty for public images
       token:
       username:
-    # Storage names must be differents
-    storage1: 
-    storage2: 
-    storage3: 
+    storage1:
+    storage2:
+    storage3:
+
     # Domain names for the webapp, authentication and qasmat's api e.g. domain.com 
     # and subdomain.domain.com for web_dns/auth_dns/api_dns
-    web_dns: 
-    auth_dns: 
-    api_dns: 
-    domain: 
+    web_dns:
+    auth_dns:
+    api_dns:
+    domain:
     docker_images:
-      repository: # TODO : provided by VeriQloud
+      repository: docker.io/veriqloud
       web:
-        name: # TODO : provided by VeriQloud
-        tag: # TODO : provided by VeriQloud
+        name: qasmat-web
+        tag: v0.11.3
       storage:
-        name: # TODO : provided by VeriQloud
-        tag: # TODO : provided by VeriQloud
+        name: qasmat-storage-lite
+        tag: v0.2.25
       proxy:
-        name: # TODO : provided by VeriQloud
-        tag: # TODO : provided by VeriQloud
+        name: qasmat-proxy-lite
+        tag: v0.2.25
