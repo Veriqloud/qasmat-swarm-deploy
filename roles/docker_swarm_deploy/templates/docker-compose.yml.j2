@@ -11,7 +11,9 @@ secrets:
   SESSION_SECRET:
     file: ./session.secret
   STORAGE_ENCRYPTION_KEY:
-    file: storage_encryption_key.secret
+    file: ./storage_encryption_key.secret
+  PSK_SECRET:
+    file: ./psk.secret
 
 services:
   redis:
@@ -96,6 +98,9 @@ services:
           - node.hostname == {{ hostvars['storage1'].ansible_hostname }}
     dns_search:
       - vq.local
+    secrets:
+    - source: PSK_SECRET
+      target: /Qasmat/secret
   {{ storage2 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
     environment:
@@ -118,6 +123,9 @@ services:
           - node.hostname == {{ hostvars['storage2'].ansible_hostname }}
     dns_search:
       - vq.local
+    secrets:
+      - source: PSK_SECRET
+        target: /Qasmat/secret
   {{ storage3 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
     environment:
@@ -140,6 +148,9 @@ services:
           - node.hostname == {{ hostvars['storage3'].ansible_hostname }}
     dns_search:
       - vq.local
+    secrets:
+      - source: PSK_SECRET
+        target: /Qasmat/secret
   proxy:
     image: "{{ docker_images.repository }}/{{ docker_images.proxy.name }}:{{ docker_images.proxy.tag }}"
     hostname: proxy.vq.local
@@ -161,3 +172,6 @@ services:
           - node.hostname == {{ hostvars['proxy'].ansible_hostname }}
     dns_search:
       - vq.local
+    secrets:
+      - source: PSK_SECRET
+        target: /Qasmat/secret

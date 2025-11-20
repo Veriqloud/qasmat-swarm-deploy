@@ -14,3 +14,5 @@
     dest: /Qasmat/config/storage-config-storage2.json
   - src: storage-config-storage3.json.j2
     dest: /Qasmat/config/storage-config-storage3.json
+  - src: psk.secret.j2
+    dest: /opt/docker-swarm/psk.secret
