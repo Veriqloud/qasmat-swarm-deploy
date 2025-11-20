@@ -13,5 +13,3 @@
   - "{{ docker_images.repository }}/{{ docker_images.web.name }}:{{ docker_images.web.tag }}"
   - "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
   - "{{ docker_images.repository }}/{{ docker_images.proxy.name }}:{{ docker_images.proxy.tag }}"
-  - docker.io/authelia/authelia:latest
-  - redis:latest

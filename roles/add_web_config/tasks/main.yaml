@@ -7,10 +7,6 @@
     group: root
     mode: "0700"
   loop:
-  - src: configuration.yml.j2
-    dest: /authelia/authelia-config/configuration.yml
-  - src: users.yml.j2
-    dest: /authelia/authelia-users/users.yml
   - src: Caddyfile.j2
     dest: /caddy/config/Caddyfile
   - src: config.json.j2

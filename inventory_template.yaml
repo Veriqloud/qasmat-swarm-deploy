@@ -28,10 +28,9 @@ all:
     storage2:
     storage3:
 
-    # Domain names for the webapp, authentication and qasmat's api e.g. domain.com 
-    # and subdomain.domain.com for web_dns/auth_dns/api_dns
+    # Domain names for the webapp and qasmat's api e.g. domain.com 
+    # and subdomain.domain.com for web_dns/api_dns
     web_dns:
-    auth_dns:
     api_dns:
     domain:
     docker_images:

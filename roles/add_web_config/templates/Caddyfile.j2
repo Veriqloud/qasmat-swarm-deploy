@@ -11,23 +11,10 @@
 
 # Self-signed cerificates for HTTPS go here
 
-# Authelia
-{{ auth_dns }} {
-    # Accepts requests (browser initiated) from web-client
-    import cors https://{{ web_dns }} true
-    reverse_proxy authelia:9091 {
-    }
-}
-
 # Qasmat's API
 {{ api_dns }} {
     route /api/* {
         import cors https://{{ web_dns }} true
-        # Checks if the user is authenticated, and redirect to authelia if it's not
-        forward_auth authelia:9091 {
-            uri /api/authz/forward-auth
-            copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
-        }
     }
     route /ping {
         import cors * false
@@ -38,10 +25,6 @@
 
 # Web client
 {{ web_dns }} {
-    # Checks if the user is authenticated, and redirect to authelia if it's not
-    forward_auth authelia:9091 {
-        uri /api/authz/forward-auth
-    }
     header /config/* {
         Cache-Control "no-cache, no-store, must-revalidate"
     }

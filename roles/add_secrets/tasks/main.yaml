@@ -7,8 +7,6 @@
     group: root
     mode: "0700"
   loop:
-  - src: redis_password.secret.j2
-    dest: /qasmat-swarm/redis_password.secret
   - src: jwt.secret.j2
     dest: /qasmat-swarm/jwt.secret
   - src: session.secret.j2
