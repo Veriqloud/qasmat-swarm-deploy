@@ -1,0 +1,19 @@
+---
+- name: Copy configuration files and secrets
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+  loop:
+  - src: redis_password.secret.j2
+    dest: /opt/docker-swarm/redis_password.secret
+  - src: jwt.secret.j2
+    dest: /opt/docker-swarm/jwt.secret
+  - src: session.secret.j2
+    dest: /opt/docker-swarm/session.secret
+  - src: storage_encryption_key.secret.j2
+    dest: /opt/docker-swarm/storage_encryption_key.secret
+  - src: psk.secret.j2
+    dest: /opt/docker-swarm/psk.secret

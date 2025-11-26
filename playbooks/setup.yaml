@@ -23,6 +23,7 @@
   roles:
   - role: add_qasmat_config
   - role: add_web_config
+  - role: add_secrets
   - role: docker_login_pull
 
 - name: Deploy the docker-swarm stack
