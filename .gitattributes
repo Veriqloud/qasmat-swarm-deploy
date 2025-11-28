@@ -1,0 +1,5 @@
+# Explicitly mark YAML files as detectable/includable
+*.yml linguist-detectable
+*.yaml linguist-detectable
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML
