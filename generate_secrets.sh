@@ -2,6 +2,7 @@
 
 # Define the target directory and secret files
 TARGET_DIR="roles/add_secrets/templates"
+mkdir -p "$TARGET_DIR"
 SECRETS=(
   "redis_password.secret.j2"
   "jwt.secret.j2"
