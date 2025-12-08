@@ -33,6 +33,11 @@ all:
     web_dns:
     api_dns:
     domain:
+    # OIDC values
+    oidc_issuer: 
+    api_oidc_client_id:
+    api_oidc_jwks_uri:
+    web_oidc_client_id:
     docker_images:
       repository: docker.io/veriqloud
       web:

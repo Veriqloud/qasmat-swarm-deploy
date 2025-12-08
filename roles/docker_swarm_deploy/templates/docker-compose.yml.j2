@@ -121,6 +121,9 @@ services:
       - CFLAG=-c
       - CPATH=/Qasmat/config/proxy-config.json
       - DATABASE_URL=/Qasmat/database/proxy.db
+      - OIDC_ISSUER={{ oidc_issuer  }}
+      - OIDC_CLIENT_ID={{ api_oidc_client_id  }}
+      - OIDC_JWKS_URI={{ api_oidc_jwks_uri  }}
     restart: 'unless-stopped'
     volumes:
       - '/Qasmat/config:/Qasmat/config'

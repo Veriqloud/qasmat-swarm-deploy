@@ -11,3 +11,5 @@
     dest: /caddy/config/Caddyfile
   - src: config.json.j2
     dest: /webclient/config/config.json
+  - src: oidc_config.json.j2
+    dest: /webclient/config/oidc_config.json
