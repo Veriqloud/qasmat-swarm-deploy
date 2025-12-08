@@ -1,29 +1,8 @@
-# CORS short-hand
-(cors) {
-    header {
-        Access-Control-Allow-Origin "{args[0]}"
-        Access-Control-Allow-Methods "GET, POST, OPTIONS"
-        Access-Control-Allow-Credentials "{args[1]}"
-        # Used for checking file integrity so it's important to let it pass through
-        Access-Control-Expose-Headers "X-File-Integrity"
-    }
-}
 
-# Self-signed cerificates for HTTPS go here
-
-# Qasmat's API
 {{ api_dns }} {
-    route /api/* {
-        import cors https://{{ web_dns }} true
-    }
-    route /ping {
-        import cors * false
-    }
-    reverse_proxy proxy:3000
-    rewrite /api /api/
+    reverse_proxy proxy:3000 
 }
 
-# Web client
 {{ web_dns }} {
     header /config/* {
         Cache-Control "no-cache, no-store, must-revalidate"
