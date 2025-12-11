@@ -155,8 +155,6 @@ services:
     image: "{{ docker_images.repository }}/{{ docker_images.proxy.name }}:{{ docker_images.proxy.tag }}"
     hostname: proxy.vq.local
     environment:
-      - NFLAG=
-      - NAME=
       - CFLAG=-c
       - CPATH=/Qasmat/config/proxy-config.json
       - DATABASE_URL=/Qasmat/database/proxy.db
