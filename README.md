@@ -8,7 +8,7 @@ The aim of this repository is to provide a way to deploy and test qasmat quickly
 ## Components of the application
 
 - Webapp is based on [Caddy webserver](https://caddyserver.com/). Public docker image is available on 🔗[Docker Hub](https://hub.docker.com/r/veriqloud/qasmat-web).
-- Authentication with your own ID provider, OIDC-compatible
+- Authentication with your own ID provider, OIDC-compatible, or a Keycloak instance
 - Proxy server for data dispatch. Public docker image is available on 🔗[Docker Hub](https://hub.docker.com/r/veriqloud/qasmat-proxy-lite).
 - Storage servers who store the shares of the data. Public docker image is available on 🔗[Docker Hub](https://hub.docker.com/r/veriqloud/qasmat-storage-lite).
 - Databases are set to default SQLite. PostgreSQL is coming soon.
@@ -26,7 +26,13 @@ Managed nodes in the inventory:
 
 DNS:
 - a domain name
-- three subdomains
+- two subdomains
+
+Authentication:
+- Either you have an identity provider setup as [described here](./authentication.md).
+- Or a keycloak instance is deployed along with the application. In this case you must provide a additionnal subdomain.
+See the inventory.
+
 
 ## Setup
 
@@ -69,7 +75,6 @@ ansible-galaxy install -r requirements.yaml
 ansible-playbook playbooks/setup.yaml
 ```
 
-
 ---
 ### Note on ssl certificates
 
@@ -82,6 +87,10 @@ If self signed certificates are necessary instead of Let's encrypt certificates,
 }
 ```
 for example, given that certificates are copied to the server hosting the web service to the folder `/caddy/data/certs/{{web_dns}}`; as `/caddy/data` folder is mounted to the container of the web service. It is possible to mount certificates elsewhere; the mount should be added to [docker compose template](roles/docker_swarm_deploy/templates/docker-compose.yml.j2).
+
+### Note on usage
+
+If you enable keycloak the default admin user is `qasmatadmin` password is `password`.
 
 ### Note on usage
 
