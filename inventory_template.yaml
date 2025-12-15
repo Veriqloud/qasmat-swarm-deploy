@@ -17,7 +17,7 @@ all:
           ansible_host:
         # Keycloak only if you don't have your own ID provider
         keycloak:
-          ansible_host: 54.38.224.98
+          ansible_host: 
   vars:
     # Enable keycloak only if you don't have your own ID provider
     enable_keycloak: true
