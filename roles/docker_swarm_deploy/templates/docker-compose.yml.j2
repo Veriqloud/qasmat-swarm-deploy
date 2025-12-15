@@ -123,7 +123,6 @@ services:
       - DATABASE_URL=/Qasmat/database/proxy.db
       - OIDC_ISSUER={{ oidc_issuer  }}
       - OIDC_CLIENT_ID={{ api_oidc_client_id  }}
-      - OIDC_JWKS_URI={{ api_oidc_jwks_uri  }}
     restart: 'unless-stopped'
     volumes:
       - '/Qasmat/config:/Qasmat/config'
@@ -139,3 +138,28 @@ services:
     secrets:
       - source: PSK_SECRET
         target: /Qasmat/secret
+
+{% if enable_keycloak %}
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    command: start
+    environment:
+      KC_HOSTNAME: "{{ keycloak_dns }}"
+      KC_HTTP_ENABLED: "true"
+      KC_HTTPS_PORT: 443
+
+      KC_PROXY: "edge"
+      KC_PROXY_HEADERS: "xforwarded"
+
+      KEYCLOAK_ADMIN: "{{ keycloak_admin_user }}"
+      KEYCLOAK_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
+    ports:
+      - "{{ keycloak_port }}:8080"
+    networks:
+      - my-overlay-net
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == {{ ansible_hostname }}
+{% endif %}

@@ -1,0 +1,85 @@
+---
+- name: Wait for Keycloak to become available
+  uri:
+    url: "http://localhost:{{ keycloak_port }}"
+    method: GET
+    status_code: 200
+  register: kc_check
+  until: kc_check.status == 200
+  retries: 10
+  delay: 10
+
+- name: Create realm
+  community.general.keycloak_realm:
+    auth_keycloak_url: "http://localhost:{{ keycloak_port }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    state: present
+    realm: "{{ keycloak_realm }}"
+    enabled: true
+
+- name: Create api client
+  community.general.keycloak_client:
+    auth_keycloak_url: "http://localhost:{{ keycloak_port }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ keycloak_realm }}"
+    state: present
+    client_id: "{{ keycloak_api_client_id }}"
+    public_client: false
+    standard_flow_enabled: true
+    direct_access_grants_enabled: false
+    redirect_uris: []
+    web_origins: []
+
+- name: Create web client with audience mapper
+  community.general.keycloak_client:
+    auth_client_id: admin-cli
+    auth_keycloak_url: "http://localhost:{{ keycloak_port  }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    state: present
+    realm: "{{ keycloak_realm }}"
+    client_id: "{{ keycloak_web_client_id }}"
+    public_client: true
+    standard_flow_enabled: true
+    redirect_uris:
+      - "https://{{ web_dns }}/callback"
+      - "https://{{ web_dns }}"
+    web_origins:
+      - "https://{{ web_dns }}"
+    full_scope_allowed: false
+    protocol: openid-connect
+    protocol_mappers:
+      - name: audience-api
+        protocol: openid-connect
+        protocolMapper: oidc-audience-mapper
+        consentRequired: false
+        config:
+          included.client.audience: "{{ keycloak_api_client_id  }}"
+          access.token.claim: true
+          id.token.claim: false
+          claim.name: aud
+
+
+- name: Create users
+  community.general.keycloak_user:
+    auth_keycloak_url: "http://localhost:{{ keycloak_port }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ keycloak_realm }}"
+    state: present
+    username: "{{ item.username }}"
+    email: "{{ item.email }}"
+    firstName: "{{ item.firstName }}"
+    lastName: "{{ item.lastName }}"
+    enabled: "{{ item.enabled | default(true) }}"
+    credentials:
+      - type: password
+        value: "{{ item.password }}"
+        temporary: false
+  loop: "{{ keycloak_users }}"
