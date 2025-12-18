@@ -3,8 +3,8 @@
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: "{{ qasmat_user }}"
-    group: "{{ qasmat_user }}"
+    owner: root
+    group: root
     mode: "0700"
   loop:
   - src: redis_password.secret.j2

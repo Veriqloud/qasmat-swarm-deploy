@@ -3,8 +3,8 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    owner: "{{ qasmat_user }}"
-    group: "{{ qasmat_user }}"
+    owner: root
+    group: root
     mode: "0700"
   loop:
   - /Qasmat
