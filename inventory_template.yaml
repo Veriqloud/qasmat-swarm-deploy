@@ -18,6 +18,7 @@ all:
   vars:
     ansible_user:
     ansible_port: 22
+    qasmat_user: "{{ ansible_user }}"
     registry:
       url: docker.io
       # In case you got access to private images; leave empty for public images

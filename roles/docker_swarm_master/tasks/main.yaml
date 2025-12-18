@@ -18,11 +18,11 @@
 - name: Save join token to a local file
   ansible.builtin.copy:
     content: "{{ join_token.stdout }}"
-    dest: "/opt/docker-swarm/.swarm_join_token"
+    dest: "/opt/.swarm_join_token"
     mode: '0600' # Restrict permissions for security
 
 - name: Copy the token to the local machine
   ansible.builtin.fetch:
-    src: "/opt/docker-swarm/.swarm_join_token"
+    src: "/opt/.swarm_join_token"
     dest: "~/.swarm_join_token"
     flat: true

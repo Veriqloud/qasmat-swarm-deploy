@@ -2,9 +2,9 @@
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: root
-    group: root
-    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
   loop:
   - src: proxy-config.json.j2
     dest: /Qasmat/config/proxy-config.json

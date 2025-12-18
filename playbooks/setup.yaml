@@ -3,7 +3,6 @@
   hosts: _master
   become: true
   roles:
-  - role: add_qasmat_dir
   - role: install
   - role: docker_swarm_master
 
@@ -11,9 +10,16 @@
   hosts: _worker
   become: true
   roles:
-  - role: add_qasmat_dir
   - role: install
   - role: docker_swarm_worker
+
+- name: Add directories
+  hosts:
+  - _master
+  - _worker
+  become: true
+  roles:
+  - role: add_dir
 
 - name: Add qasmat config
   hosts:

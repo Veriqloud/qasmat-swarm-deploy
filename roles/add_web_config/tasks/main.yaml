@@ -1,30 +1,11 @@
 ---
-- name: Create directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: root
-    mode: "u=rwx,g=rx,o=rx"
-  loop:
-  - /authelia
-  - /authelia/authelia-users
-  - /authelia/authelia-config
-  - /redis
-  - /redis/data
-  - /caddy
-  - /caddy/data
-  - /caddy/config
-  - /webclient
-  - /webclient/config
-
 - name: Copy configuration files and secrets
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: root
-    group: root
-    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
   loop:
   - src: configuration.yml.j2
     dest: /authelia/authelia-config/configuration.yml

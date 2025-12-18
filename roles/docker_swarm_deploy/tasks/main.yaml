@@ -2,10 +2,10 @@
 - name: Copy docker-compose.yml
   ansible.builtin.template:
     src: docker-compose.yml.j2
-    dest: /opt/docker-swarm/docker-compose.yml
-    owner: root
-    group: root
-    mode: "u=rwx,g=rx,o=rx"
+    dest: /qasmat-swarm/docker-compose.yml
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0755"
 - name: Deploy the Docker Swarm stack using command
   ansible.builtin.command: >
-    docker stack deploy -c /opt/docker-swarm/docker-compose.yml qasmat
+    docker stack deploy -c /qasmat-swarm/docker-compose.yml qasmat
