@@ -2,6 +2,8 @@ networks:
   my-overlay-net:
     driver: overlay
     attachable: true  # Allows standalone containers to attach to this network
+    driver_opts:
+      encrypted: ""
 
 secrets:
   redis_password:
