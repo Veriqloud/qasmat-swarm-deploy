@@ -1,0 +1,8 @@
+---
+keycloak_users:
+  - username: "qasmatadmin"
+    firstName: "Qasmat"
+    lastName: "Admin"
+    email: "qasmatadmin@example.com"
+    password: "password"
+    enabled: true

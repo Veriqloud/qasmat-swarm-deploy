@@ -37,3 +37,10 @@
   become: true
   roles:
   - role: docker_swarm_deploy
+
+- name: Configure Keycloak (conditional)
+  hosts: keycloak
+  become: true
+  roles:
+    - role: keycloak
+      when: enable_keycloak | bool
