@@ -7,11 +7,5 @@
     group: root
     mode: "0700"
   loop:
-  - src: jwt.secret.j2
-    dest: /qasmat-swarm/jwt.secret
-  - src: session.secret.j2
-    dest: /qasmat-swarm/session.secret
-  - src: storage_encryption_key.secret.j2
-    dest: /qasmat-swarm/storage_encryption_key.secret
   - src: psk.secret.j2
     dest: /qasmat-swarm/psk.secret
