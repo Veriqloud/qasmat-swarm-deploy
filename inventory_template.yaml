@@ -14,14 +14,10 @@ all:
         storage3:
           ansible_host:
         web:
-          ansible_host:
-        # Keycloak only if you don't have your own ID provider
+          ansible_host: # Keycloak only if you don't have your own ID provider
         keycloak:
-          ansible_host: 
+          ansible_host:
   vars:
-    # Enable keycloak only if you don't have your own ID provider
-    enable_keycloak: true
-
     ansible_user:
     ansible_port: 22
     qasmat_user: "{{ ansible_user }}"
@@ -36,8 +32,8 @@ all:
 
     # Domain names for the webapp, authentication and qasmat's api e.g. domain.com 
     # and subdomain.domain.com for web_dns/api_dns
-    web_dns: 
-    api_dns: 
+    web_dns:
+    api_dns:
     domain:
 
     # If you have your own ID provider (enable_keycloak=false) uncomment and complete : 
@@ -59,7 +55,7 @@ all:
     # oidc_issuer: "https://{{ keycloak_dns }}/realms/{{ keycloak_realm }}"
     # api_oidc_client_id: "{{ keycloak_api_client_id  }}"
     # web_oidc_client_id: "{{ keycloak_web_client_id  }}"
-    
+
     docker_images:
       repository: docker.io/veriqloud
       web:

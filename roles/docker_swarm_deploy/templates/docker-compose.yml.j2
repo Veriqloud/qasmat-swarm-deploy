@@ -133,7 +133,7 @@ services:
       - source: PSK_SECRET
         target: /Qasmat/secret
 
-{% if enable_keycloak %}
+{% if hostvars['keycloak'] is defined %}
   keycloak:
     image: quay.io/keycloak/keycloak
     command: start

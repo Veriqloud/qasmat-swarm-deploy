@@ -42,5 +42,5 @@
   hosts: keycloak
   become: true
   roles:
-    - role: keycloak
-      when: enable_keycloak | bool
+  - role: keycloak
+    when: hostvars['keycloak'] is defined
