@@ -16,9 +16,11 @@
     auth_realm: master
     auth_username: "{{ keycloak_admin_user }}"
     auth_password: "{{ keycloak_admin_password }}"
+    auth_client_id: admin-cli
     validate_certs: true
     # Realm Core Settings
     realm: "{{ keycloak_realm }}"
+    id: "{{ keycloak_realm }}"
     state: present
     enabled: true
     display_name: "Qasmat Realm"
@@ -46,7 +48,7 @@
     service_accounts_enabled: true
 
 - name: Create Client Scope for API Audience
-  community.general.keycloak_client_scope:
+  community.general.keycloak_clientscope:
     auth_keycloak_url: "https://{{ keycloak_dns }}"
     auth_realm: master
     auth_username: "{{ keycloak_admin_user }}"

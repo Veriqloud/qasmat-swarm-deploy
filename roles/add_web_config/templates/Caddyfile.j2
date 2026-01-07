@@ -12,7 +12,7 @@
     file_server browse
 }
 
-{% if enable_keycloak %}
+{% if keycloak_dns is defined %}
 {{ keycloak_dns }} {
     reverse_proxy keycloak:8080 {
         header_up X-Forwarded-Proto https

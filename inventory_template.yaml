@@ -14,7 +14,7 @@ all:
         storage3:
           ansible_host:
         web:
-          ansible_host: # Keycloak only if you don't have your own ID provider
+          ansible_host:
         keycloak:
           ansible_host:
   vars:

@@ -133,7 +133,7 @@ services:
       - source: PSK_SECRET
         target: /Qasmat/secret
 
-{% if hostvars['keycloak'] is defined %}
+{% if keycloak_dns is defined %}
   keycloak:
     image: quay.io/keycloak/keycloak
     command: start
@@ -155,5 +155,5 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ ansible_hostname }}
+          - node.hostname == {{ hostvars['keycloak'].ansible_hostname }}
 {% endif %}
