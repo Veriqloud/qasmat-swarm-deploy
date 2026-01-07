@@ -78,10 +78,14 @@
     redirect_uris: [ "https://{{ web_dns }}/*" ]
     web_origins: [ "https://{{ web_dns }}" ]
     default_client_scopes:
+    - "basic"
     - "api-access"
     - "role_list"
     - "profile"
     - "email"
+    - "roles" # Added for permissions
+    - "web-origins" # Added for CORS
+    - "microprofile-jwt" # Includes standard JWT claims like sub
 
 - name: Create users
   community.general.keycloak_user:
