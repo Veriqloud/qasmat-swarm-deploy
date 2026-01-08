@@ -43,4 +43,4 @@
   become: true
   roles:
   - role: keycloak
-    when: hostvars['keycloak'] is defined
+    when: keycloak_dns is defined

@@ -34,36 +34,33 @@ all:
     # and subdomain.domain.com for web_dns/api_dns
     web_dns:
     api_dns:
-    domain:
 
-    # If you have your own ID provider (enable_keycloak=false) uncomment and complete : 
-    # oidc_issuer:  
-    # api_oidc_client_id: 
-    # web_oidc_client_id: 
+    # If you wish to mount keycloack together with qasmat, please complete the followings, leave empty to skip keycloak deployment. 
 
-    # Else, if you don't have your own ID provider (enable_keycloak=true) uncomment and complete the dns : 
-    # keycloak_dns: 
-    # keycloak_port: 8080
+    keycloak_dns:
+    keycloak_port: 8080
 
-    # keycloak_admin_user: admin
-    # keycloak_admin_password: admin
+    keycloak_admin_user: admin
+    keycloak_admin_password: admin
 
-    # keycloak_realm: myrealm
-    # keycloak_api_client_id: api
-    # keycloak_web_client_id: web
+    keycloak_realm: myrealm
+    keycloak_api_client_id: api
+    keycloak_web_client_id: web
 
-    # oidc_issuer: "https://{{ keycloak_dns }}/realms/{{ keycloak_realm }}"
-    # api_oidc_client_id: "{{ keycloak_api_client_id  }}"
-    # web_oidc_client_id: "{{ keycloak_web_client_id  }}"
+    # If you have your own ID provider complete only the followings : 
+
+    oidc_issuer: "https://{{ keycloak_dns }}/realms/{{ keycloak_realm }}"
+    api_oidc_client_id: "{{ keycloak_api_client_id  }}"
+    web_oidc_client_id: "{{ keycloak_web_client_id  }}"
 
     docker_images:
       repository: docker.io/veriqloud
       web:
-        name: qasmat-web
-        tag: v0.11.3
+        name: web-client
+        tag:
       storage:
-        name: qasmat-storage-lite
-        tag: v0.2.25
+        name: storage-server
+        tag:
       proxy:
-        name: qasmat-proxy-lite
-        tag: v0.2.25
+        name: proxy-server
+        tag:
