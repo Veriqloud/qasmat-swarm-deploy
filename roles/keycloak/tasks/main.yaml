@@ -23,7 +23,7 @@
     id: "{{ keycloak_realm }}"
     state: present
     enabled: true
-    display_name: "Qasmat Realm"
+    display_name: "Qasmat | VeriQloud"
     # Security & Behavior
     ssl_required: all
     registration_allowed: false
@@ -31,9 +31,6 @@
     remember_me: true
     # Token Lifespans (Example: 1 hour for access tokens)
     access_token_lifespan: 3600
-    # Themes
-    login_theme: "Qasmat"
-    email_theme: "Qasmat"
 
 - name: Create API Client (Resource Server)
   community.general.keycloak_client:
@@ -44,8 +41,9 @@
     realm: "{{ keycloak_realm }}"
     client_id: "{{ keycloak_api_client_id }}"
     state: present
-    public_client: false
+    public_client: true
     service_accounts_enabled: true
+    standard_flow_enabled: true
 
 - name: Create Client Scope for API Audience
   community.general.keycloak_clientscope:
@@ -64,6 +62,7 @@
         included.client.audience: "{{ keycloak_api_client_id }}"
         id.token.claim: "false"
         access.token.claim: "true"
+        claim.name: "aud"
 
 - name: Create Web Client and link Scope
   community.general.keycloak_client:
@@ -80,10 +79,8 @@
     default_client_scopes:
     - "basic"
     - "api-access"
-    - "role_list"
     - "profile"
     - "email"
-    - "roles" # Added for permissions
     - "web-origins" # Added for CORS
     - "microprofile-jwt" # Includes standard JWT claims like sub
 
