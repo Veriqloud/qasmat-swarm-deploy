@@ -14,3 +14,10 @@
   become: true
   roles:
   - role: docker_swarm_deploy
+
+- name: Deploy Keycloak
+  hosts: keycloak
+  become: true
+  roles:
+  - role: keycloak
+    when: keycloak_dns is defined
