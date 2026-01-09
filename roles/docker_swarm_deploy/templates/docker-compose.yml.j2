@@ -140,8 +140,8 @@ services:
       KC_HOSTNAME_STRICT: "true"
       KC_PROXY_HEADERS: "xforwarded"
       KC_PROXY: "edge"
-      KEYCLOAK_ADMIN: "{{ keycloak_admin_user }}"
-      KEYCLOAK_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
+      KC_BOOTSTRAP_ADMIN_USERNAME: "{{ keycloak_admin_user }}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
     networks:
       - my-overlay-net
     restart: always
