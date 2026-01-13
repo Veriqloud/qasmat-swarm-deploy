@@ -5,6 +5,7 @@
   - _worker
   become: true
   roles:
+  - role: add_qasmatuser
   - role: add_web_config
   - role: add_qasmat_config
   - role: docker_login_pull

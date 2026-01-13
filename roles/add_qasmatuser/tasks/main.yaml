@@ -1,0 +1,27 @@
+---
+- name: Ensure the unprivileged group exists
+  ansible.builtin.group:
+    name: "{{ qasmat_user }}"
+    gid: "{{ qasmat_uid }}"
+    state: present
+    system: yes # Mark as a system group
+
+- name: Create the unprivileged security user
+  ansible.builtin.user:
+    name: "{{ qasmat_user }}"
+    uid: "{{ qasmat_uid }}"
+    group: "{{ qasmat_user }}"
+    shell: /sbin/nologin
+    create_home: no
+    system: yes # Mark as a system user
+    state: present
+
+- name: Harden permissions for the Qasmat data directory
+  ansible.builtin.file:
+    path: "{{ qasmat_data_path }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: '0755'
+    recurse: yes # FIXED: Correct parameter name
+    follow: no # SECURITY: Do not follow symlinks
