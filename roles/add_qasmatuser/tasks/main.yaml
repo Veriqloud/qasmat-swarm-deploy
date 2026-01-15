@@ -25,3 +25,16 @@
     mode: '0755'
     recurse: yes # FIXED: Correct parameter name
     follow: no # SECURITY: Do not follow symlinks
+
+- name: Harden permissions for the webclient's directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: '0755'
+    recurse: yes # FIXED: Correct parameter name
+    follow: no # SECURITY: Do not follow symlinks
+  loop:
+  - /webclient
+  - /caddy

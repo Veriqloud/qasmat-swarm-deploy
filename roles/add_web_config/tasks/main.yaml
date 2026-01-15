@@ -3,9 +3,9 @@
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: root
-    group: root
-    mode: "0700"
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0755"
   loop:
   - src: Caddyfile.j2
     dest: /caddy/config/Caddyfile
