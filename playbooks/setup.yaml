@@ -13,13 +13,14 @@
   - role: install
   - role: docker_swarm_worker
 
-- name: Add directories
+- name: Add directories and permissions
   hosts:
   - _master
   - _worker
   become: true
   roles:
   - role: add_dir
+  - role: add_qasmatuser
 
 - name: Add qasmat config
   hosts:
@@ -37,3 +38,10 @@
   become: true
   roles:
   - role: docker_swarm_deploy
+
+- name: Configure Keycloak (conditional)
+  hosts: keycloak
+  become: true
+  roles:
+  - role: keycloak
+    when: keycloak_dns is defined

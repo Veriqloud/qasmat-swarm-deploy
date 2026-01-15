@@ -5,6 +5,7 @@
   - _worker
   become: true
   roles:
+  - role: add_qasmatuser
   - role: add_web_config
   - role: add_qasmat_config
   - role: docker_login_pull
@@ -14,3 +15,10 @@
   become: true
   roles:
   - role: docker_swarm_deploy
+
+- name: Deploy Keycloak
+  hosts: keycloak
+  become: true
+  roles:
+  - role: keycloak
+    when: keycloak_dns is defined
