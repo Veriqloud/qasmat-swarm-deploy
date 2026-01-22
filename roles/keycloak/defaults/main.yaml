@@ -1,14 +1,23 @@
 ---
 keycloak_users:
+- username: "kcadmin"
+  firstName: "KC"
+  lastName: "Admin"
+  email: "kcadmin@example.com"
+  password: "password"
+  enabled: true
+  is_admin: true
 - username: "qasmatadmin"
   firstName: "Qasmat"
   lastName: "Admin"
   email: "qasmatadmin@example.com"
   password: "password"
   enabled: true
+  is_admin: false
 - username: "qasmatuser"
   firstName: "Qasmat"
   lastName: "User"
   email: "qasmatuser@example.com"
   password: "password"
   enabled: true
+  is_admin: false

@@ -84,6 +84,42 @@
     - "web-origins" # Added for CORS
     - "microprofile-jwt" # Includes standard JWT claims like sub
 
+- name: Create PERMANENT Admin User
+  community.general.keycloak_user:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: master # <--- MUST be master for Super Admin
+    username: "{{ item.username }}"
+    email: "{{ item.email }}"
+    firstName: "{{ item.firstName }}"
+    lastName: "{{ item.lastName }}"
+    enabled: "{{ item.enabled }}"
+    state: present
+    credentials:
+    - type: password
+      value: "{{ item.password }}"
+      temporary: false
+  loop: "{{ keycloak_users }}"
+  when: item.is_admin | default(false)
+  no_log: true # Important: Prevents passwords from leaking in Ansible logs
+
+- name: Assign Super Admin permissions to the new adminuser
+  community.general.keycloak_user_rolemapping:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: master
+    target_username: "{{ item.username }}"
+    roles:
+    - name: admin
+    state: present
+  loop: "{{ keycloak_users }}"
+  no_log: true # Important: Prevents passwords from leaking in Ansible logs
+  when: item.is_admin | default(false)
+
 - name: Create users
   community.general.keycloak_user:
     auth_keycloak_url: "https://{{ keycloak_dns }}"
@@ -103,3 +139,4 @@
       temporary: false
   loop: "{{ keycloak_users }}"
   no_log: true # Important: Prevents passwords from leaking in Ansible logs
+  when: not (item.is_admin | default(false))
