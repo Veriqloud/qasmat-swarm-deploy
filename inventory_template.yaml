@@ -1,11 +1,11 @@
 all:
   children:
     # Provide IP adresses
-    _master:
+    proxy:
       hosts:
-        proxy:
+        proxy1:
           ansible_host:
-    _worker:
+    storage:
       hosts:
         storage1:
           ansible_host:
@@ -13,8 +13,12 @@ all:
           ansible_host:
         storage3:
           ansible_host:
-        web:
+    web:
+      hosts:
+        web1:
           ansible_host:
+    auth:
+      hosts:
         keycloak:
           ansible_host:
   vars:

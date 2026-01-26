@@ -1,40 +1,59 @@
 ---
 - name: Setup docker-swarm master
-  hosts: _master
+  hosts: proxy
   become: true
   roles:
   - role: install
   - role: docker_swarm_master
 
 - name: Setup docker-swarm worker
-  hosts: _worker
+  hosts:
+  - storage
+  - web
+  - auth
   become: true
   roles:
   - role: install
   - role: docker_swarm_worker
 
 - name: Add directories and permissions
-  hosts:
-  - _master
-  - _worker
+  hosts: all
   become: true
   roles:
-  - role: add_dir
-  - role: add_qasmatuser
+  - role: add_qasmatuser_dir
+
+- name: Add secrets
+  hosts: proxy
+  become: true
+  roles:
+  - role: add_secrets
 
 - name: Add qasmat config
   hosts:
-  - _master
-  - _worker
+  - proxy
+  - storage
   become: true
   roles:
   - role: add_qasmat_config
+  - role: docker_login_pull
+
+- name: Add web config
+  hosts: web
+  become: true
+  roles:
   - role: add_web_config
-  - role: add_secrets
+
+- name: Pull docker_images
+  hosts:
+  - proxy
+  - storage
+  - web
+  become: true
+  roles:
   - role: docker_login_pull
 
 - name: Deploy the docker-swarm stack
-  hosts: _master
+  hosts: proxy
   become: true
   roles:
   - role: docker_swarm_deploy

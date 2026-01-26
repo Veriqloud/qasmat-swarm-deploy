@@ -3,8 +3,8 @@
   ansible.builtin.template:
     src: docker-compose.yml.j2
     dest: /qasmat-swarm/docker-compose.yml
-    owner: root
-    group: root
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: "0755"
 - name: Deploy the Docker Swarm stack using command
   ansible.builtin.command: >
