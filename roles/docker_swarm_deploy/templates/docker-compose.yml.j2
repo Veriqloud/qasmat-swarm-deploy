@@ -29,8 +29,8 @@ services:
       - my-overlay-net
     deploy:
       placement:
-        constraints:
-          - node.hostname == {{ hostvars['web'].ansible_hostname }}
+       constraints:
+        - node.labels.service_role == web_server
 
   {{ storage1 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
@@ -45,14 +45,13 @@ services:
       - proxy
     volumes:
       - '/Qasmat/config:/Qasmat/config'
-      - '/Qasmat/database:/Qasmat/database'
       - '/Qasmat/share_storage_{{ storage1 }}:/Qasmat/share_storage_{{ storage1 }}'
     networks:
       - my-overlay-net
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['storage1'].ansible_hostname }}
+          - node.hostname == {{ hostvars['storage1']['ansible_hostname'] }}
     dns_search:
       - vq.local
     secrets:
@@ -71,14 +70,13 @@ services:
       - proxy
     volumes:
       - '/Qasmat/config:/Qasmat/config'
-      - '/Qasmat/database:/Qasmat/database'
       - '/Qasmat/share_storage_{{ storage2 }}:/Qasmat/share_storage_{{ storage2 }}'
     networks:
       - my-overlay-net
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['storage2'].ansible_hostname }}
+          - node.hostname == {{ hostvars['storage2']['ansible_hostname'] }}
     dns_search:
       - vq.local
     secrets:
@@ -97,14 +95,13 @@ services:
       - proxy
     volumes:
       - '/Qasmat/config:/Qasmat/config'
-      - '/Qasmat/database:/Qasmat/database'
       - '/Qasmat/share_storage_{{ storage3 }}:/Qasmat/share_storage_{{ storage3 }}'
     networks:
       - my-overlay-net
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['storage3'].ansible_hostname }}
+          - node.hostname == {{ hostvars['storage3']['ansible_hostname'] }}
     dns_search:
       - vq.local
     secrets:
@@ -129,7 +126,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['proxy'].ansible_hostname }}
+          - node.labels.service_role == proxy_server
     dns_search:
       - vq.local
     secrets:
@@ -154,7 +151,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['keycloak'].ansible_hostname }}
+          - node.hostname == {{ hostvars['keycloak']['ansible_hostname'] }}
     expose:
       - "8080"
 {% endif %}

@@ -1,4 +1,5 @@
 ---
+# Install docker and initialize the swarm
 - name: Setup docker-swarm master
   hosts: proxy
   become: true
@@ -16,11 +17,13 @@
   - role: install
   - role: docker_swarm_worker
 
-- name: Add directories and permissions
+# Add qasmatuser, directories, node labels, secrets and configs
+- name: Add directories, permissions and node labels
   hosts: all
   become: true
   roles:
   - role: add_qasmatuser_dir
+  - role: add_nodelabels
 
 - name: Add secrets
   hosts: proxy
@@ -35,7 +38,6 @@
   become: true
   roles:
   - role: add_qasmat_config
-  - role: docker_login_pull
 
 - name: Add web config
   hosts: web
@@ -43,6 +45,7 @@
   roles:
   - role: add_web_config
 
+# Pull docker images and deploy the stack
 - name: Pull docker_images
   hosts:
   - proxy
@@ -53,7 +56,7 @@
   - role: docker_login_pull
 
 - name: Deploy the docker-swarm stack
-  hosts: proxy
+  hosts: "{{ groups['proxy'][0] }}"
   become: true
   roles:
   - role: docker_swarm_deploy

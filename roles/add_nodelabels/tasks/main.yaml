@@ -1,0 +1,14 @@
+---
+- name: Label Swarm nodes based on inventory groups
+  community.docker.docker_node:
+    hostname: "{{ ansible_hostname }}"
+    labels:
+      service_role: "{{ item.label }}"
+  # This tells Ansible: "Run this command on the manager, but use the facts of the current host"
+  delegate_to: "{{ groups['proxy'][0] }}"
+  loop:
+  - { group: 'web', label: 'web_server' }
+  - { group: 'storage', label: 'storage_server' }
+  - { group: 'proxy', label: 'proxy_server' }
+  - { group: 'auth', label: 'auth_server' }
+  when: "item.group in group_names"

@@ -1,16 +1,34 @@
 ---
+- name: Gather info from all nodes
+  hosts: all
+  gather_facts: true
+  become: true
+
 - name: Add qasmat config
   hosts:
-  - _master
-  - _worker
+  - proxy
+  - storage
+  become: true
+  roles:
+  - role: add_qasmat_config
+
+- name: Add web config
+  hosts: web
   become: true
   roles:
   - role: add_web_config
-  - role: add_qasmat_config
+
+- name: Pull docker_images
+  hosts:
+  - proxy
+  - storage
+  - web
+  become: true
+  roles:
   - role: docker_login_pull
 
 - name: Deploy
-  hosts: _master
+  hosts: "{{ groups['proxy'][0] }}"
   become: true
   roles:
   - role: docker_swarm_deploy
