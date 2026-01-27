@@ -1,39 +1,69 @@
 ---
+# Install docker and initialize the swarm
 - name: Setup docker-swarm master
-  hosts: _master
+  hosts: proxy
   become: true
   roles:
   - role: install
   - role: docker_swarm_master
 
 - name: Setup docker-swarm worker
-  hosts: _worker
+  hosts:
+  - storage
+  - web
+  - auth
   become: true
   roles:
   - role: install
   - role: docker_swarm_worker
 
-- name: Add directories
-  hosts:
-  - _master
-  - _worker
+# Add qasmatuser, directories, node labels, secrets and configs
+- name: Add directories, permissions and node labels
+  hosts: all
   become: true
   roles:
-  - role: add_dir
+  - role: add_qasmatuser_dir
+  - role: add_nodelabels
+
+- name: Add secrets
+  hosts: proxy
+  become: true
+  roles:
+  - role: add_secrets
 
 - name: Add qasmat config
   hosts:
-  - _master
-  - _worker
+  - proxy
+  - storage
   become: true
   roles:
   - role: add_qasmat_config
+
+- name: Add web config
+  hosts: web
+  become: true
+  roles:
   - role: add_web_config
-  - role: add_secrets
+
+# Pull docker images and deploy the stack
+- name: Pull docker_images
+  hosts:
+  - proxy
+  - storage
+  - web
+  become: true
+  roles:
   - role: docker_login_pull
 
 - name: Deploy the docker-swarm stack
-  hosts: _master
+  hosts: "{{ groups['proxy'][0] }}"
   become: true
   roles:
   - role: docker_swarm_deploy
+
+- name: Configure Keycloak (conditional)
+  hosts: keycloak
+  become: true
+  roles:
+  - role: keycloak
+    when: keycloak_dns is defined

@@ -1,11 +1,11 @@
 all:
   children:
     # Provide IP adresses
-    _master:
+    proxy:
       hosts:
-        proxy:
+        proxy1:
           ansible_host:
-    _worker:
+    storage:
       hosts:
         storage1:
           ansible_host:
@@ -13,7 +13,13 @@ all:
           ansible_host:
         storage3:
           ansible_host:
-        web:
+    web:
+      hosts:
+        web1:
+          ansible_host:
+    auth:
+      hosts:
+        keycloak:
           ansible_host:
   vars:
     ansible_user:
@@ -29,19 +35,36 @@ all:
     storage3:
 
     # Domain names for the webapp, authentication and qasmat's api e.g. domain.com 
-    # and subdomain.domain.com for web_dns/auth_dns/api_dns
+    # and subdomain.domain.com for web_dns/api_dns
     web_dns:
-    auth_dns:
     api_dns:
-    domain:
+
+    # If you wish to mount keycloack together with qasmat, please complete the followings, leave empty to skip keycloak deployment. 
+
+    keycloak_dns:
+    keycloak_port: 8080
+
+    keycloak_admin_user: admin
+    keycloak_admin_password: admin
+
+    keycloak_realm: myrealm
+    keycloak_api_client_id: api
+    keycloak_web_client_id: web
+
+    # If you have your own ID provider complete only the followings : 
+
+    oidc_issuer: "https://{{ keycloak_dns }}/realms/{{ keycloak_realm }}"
+    api_oidc_client_id: "{{ keycloak_api_client_id  }}"
+    web_oidc_client_id: "{{ keycloak_web_client_id  }}"
+
     docker_images:
       repository: docker.io/veriqloud
       web:
-        name: qasmat-web
-        tag: v0.11.3
+        name: web-client
+        tag:
       storage:
-        name: qasmat-storage-lite
-        tag: v0.2.25
+        name: storage-server
+        tag:
       proxy:
-        name: qasmat-proxy-lite
-        tag: v0.2.25
+        name: proxy-server
+        tag:

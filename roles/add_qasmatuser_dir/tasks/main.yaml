@@ -1,0 +1,61 @@
+---
+- name: Ensure the unprivileged group exists
+  ansible.builtin.group:
+    name: "{{ qasmat_user }}"
+    gid: "{{ qasmat_uid }}"
+    state: present
+    system: yes # Mark as a system group
+
+- name: Create the unprivileged security user
+  ansible.builtin.user:
+    name: "{{ qasmat_user }}"
+    uid: "{{ qasmat_uid }}"
+    group: "{{ qasmat_user }}"
+    shell: /sbin/nologin
+    create_home: no
+    system: yes # Mark as a system user
+    state: present
+
+- name: Create directories on proxy
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
+  loop:
+  - /Qasmat
+  - /Qasmat/database
+  - /Qasmat/config
+  - /qasmat-swarm
+  when: "'proxy' in group_names"
+
+- name: Create directories on storage
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
+  loop:
+  - /Qasmat
+  - /Qasmat/config
+  - /Qasmat/share_storage_{{ storage1 }}
+  - /Qasmat/share_storage_{{ storage2 }}
+  - /Qasmat/share_storage_{{ storage3 }}
+  when: "'storage' in group_names"
+
+- name: Create directories on web
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
+  loop:
+  - /caddy
+  - /caddy/data
+  - /caddy/config
+  - /webclient
+  - /webclient/config
+  when: "'web' in group_names"

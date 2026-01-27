@@ -6,58 +6,13 @@ networks:
       encrypted: ""
 
 secrets:
-  redis_password:
-    file: ./redis_password.secret
-  JWT_SECRET:
-    file: ./jwt.secret
-  SESSION_SECRET:
-    file: ./session.secret
-  STORAGE_ENCRYPTION_KEY:
-    file: ./storage_encryption_key.secret
   PSK_SECRET:
     file: ./psk.secret
 
 services:
-  redis:
-    image: 'redis:latest'
-    restart: 'unless-stopped'
-    volumes:
-      - '/redis/data:/data'
-    secrets:
-      - redis_password
-    command: bash -c "redis-server --appendonly yes --requirepass $$(cat /run/secrets/redis_password)"
-    networks:
-      - my-overlay-net
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == {{ hostvars['web'].ansible_hostname }}
-
-  authelia:
-    image: 'docker.io/authelia/authelia:latest'
-    restart: 'unless-stopped'
-    volumes:
-      - '/authelia/authelia-config:/config'
-      - '/authelia/authelia-users:/etc/authelia/database'
-    depends_on:
-      - redis
-    secrets: ['redis_password', 'JWT_SECRET', 'SESSION_SECRET', 'STORAGE_ENCRYPTION_KEY']
-    environment:
-      AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: '/run/secrets/JWT_SECRET'
-      AUTHELIA_SESSION_SECRET_FILE: '/run/secrets/SESSION_SECRET'
-      AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: '/run/secrets/STORAGE_ENCRYPTION_KEY'
-      AUTHELIA_SESSION_REDIS_PASSWORD_FILE: '/run/secrets/redis_password'
-    networks:
-      - my-overlay-net
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == {{ hostvars['web'].ansible_hostname }}
-
   web-client:
     image: "{{ docker_images.repository }}/{{ docker_images.web.name }}:{{ docker_images.web.tag }}"
     depends_on:
-      - authelia
       - proxy
     restart: 'unless-stopped'
     cap_add:
@@ -66,7 +21,6 @@ services:
       - 80:80
       - 443:443
       - 443:443/udp
-      - 2019:2019
     volumes:
       - '/caddy/config:/etc/caddy'
       - '/caddy/data:/data'
@@ -75,11 +29,12 @@ services:
       - my-overlay-net
     deploy:
       placement:
-        constraints:
-          - node.hostname == {{ hostvars['web'].ansible_hostname }}
+       constraints:
+        - node.labels.service_role == web_server
 
   {{ storage1 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
+    user: "10001:10001"
     environment:
       - NFLAG=-n
       - NAME={{ storage1 }}
@@ -90,14 +45,13 @@ services:
       - proxy
     volumes:
       - '/Qasmat/config:/Qasmat/config'
-      - '/Qasmat/database:/Qasmat/database'
       - '/Qasmat/share_storage_{{ storage1 }}:/Qasmat/share_storage_{{ storage1 }}'
     networks:
       - my-overlay-net
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['storage1'].ansible_hostname }}
+          - node.hostname == {{ hostvars['storage1']['ansible_hostname'] }}
     dns_search:
       - vq.local
     secrets:
@@ -105,6 +59,7 @@ services:
       target: /Qasmat/secret
   {{ storage2 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
+    user: "10001:10001"
     environment:
       - NFLAG=-n
       - NAME={{ storage2 }}
@@ -115,14 +70,13 @@ services:
       - proxy
     volumes:
       - '/Qasmat/config:/Qasmat/config'
-      - '/Qasmat/database:/Qasmat/database'
       - '/Qasmat/share_storage_{{ storage2 }}:/Qasmat/share_storage_{{ storage2 }}'
     networks:
       - my-overlay-net
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['storage2'].ansible_hostname }}
+          - node.hostname == {{ hostvars['storage2']['ansible_hostname'] }}
     dns_search:
       - vq.local
     secrets:
@@ -130,6 +84,7 @@ services:
         target: /Qasmat/secret
   {{ storage3 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
+    user: "10001:10001"
     environment:
       - NFLAG=-n
       - NAME={{ storage3 }}
@@ -140,14 +95,13 @@ services:
       - proxy
     volumes:
       - '/Qasmat/config:/Qasmat/config'
-      - '/Qasmat/database:/Qasmat/database'
       - '/Qasmat/share_storage_{{ storage3 }}:/Qasmat/share_storage_{{ storage3 }}'
     networks:
       - my-overlay-net
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['storage3'].ansible_hostname }}
+          - node.hostname == {{ hostvars['storage3']['ansible_hostname'] }}
     dns_search:
       - vq.local
     secrets:
@@ -156,10 +110,13 @@ services:
   proxy:
     image: "{{ docker_images.repository }}/{{ docker_images.proxy.name }}:{{ docker_images.proxy.tag }}"
     hostname: proxy.vq.local
+    user: "10001:10001"
     environment:
       - CFLAG=-c
       - CPATH=/Qasmat/config/proxy-config.json
-      - DATABASE_URL=/Qasmat/database/proxy.db
+      - DATABASE_URL=sqlite:///Qasmat/database/proxy.db
+      - OIDC_ISSUER={{ oidc_issuer  }}
+      - OIDC_CLIENT_ID={{ api_oidc_client_id  }}
     restart: 'unless-stopped'
     volumes:
       - '/Qasmat/config:/Qasmat/config'
@@ -169,9 +126,32 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == {{ hostvars['proxy'].ansible_hostname }}
+          - node.labels.service_role == proxy_server
     dns_search:
       - vq.local
     secrets:
       - source: PSK_SECRET
         target: /Qasmat/secret
+
+{% if keycloak_dns is defined %}
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    command: start
+    environment:
+      KC_HOSTNAME: "{{ keycloak_dns }}"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "true"
+      KC_PROXY_HEADERS: "xforwarded"
+      KC_PROXY: "edge"
+      KC_BOOTSTRAP_ADMIN_USERNAME: "{{ keycloak_admin_user }}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
+    networks:
+      - my-overlay-net
+    restart: always
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == {{ hostvars['keycloak']['ansible_hostname'] }}
+    expose:
+      - "8080"
+{% endif %}

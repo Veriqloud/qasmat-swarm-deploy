@@ -1,0 +1,142 @@
+---
+- name: Wait for Keycloak to become available
+  uri:
+    url: "https://{{ keycloak_dns }}"
+    method: GET
+    status_code: 200
+  register: kc_check
+  until: kc_check.status == 200
+  retries: 10
+  delay: 10
+
+- name: Create and Configure Keycloak Realm
+  community.general.keycloak_realm:
+    # Connection Settings
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    auth_client_id: admin-cli
+    validate_certs: true
+    # Realm Core Settings
+    realm: "{{ keycloak_realm }}"
+    id: "{{ keycloak_realm }}"
+    state: present
+    enabled: true
+    display_name: "Qasmat | VeriQloud"
+    # Security & Behavior
+    ssl_required: all
+    registration_allowed: false
+    reset_password_allowed: true
+    remember_me: true
+    # Token Lifespans (Example: 1 hour for access tokens)
+    access_token_lifespan: 3600
+
+- name: Create API Client (Resource Server)
+  community.general.keycloak_client:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ keycloak_realm }}"
+    client_id: "{{ keycloak_api_client_id }}"
+    state: present
+    public_client: true
+    service_accounts_enabled: true
+    standard_flow_enabled: true
+
+- name: Create Client Scope for API Audience
+  community.general.keycloak_clientscope:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ keycloak_realm }}"
+    name: "api-access"
+    protocol: openid-connect
+    protocol_mappers:
+    - name: "audience-mapper"
+      protocol: openid-connect
+      protocolMapper: oidc-audience-mapper
+      config:
+        included.client.audience: "{{ keycloak_api_client_id }}"
+        id.token.claim: "false"
+        access.token.claim: "true"
+        claim.name: "aud"
+
+- name: Create Web Client and link Scope
+  community.general.keycloak_client:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ keycloak_realm }}"
+    client_id: "{{ keycloak_web_client_id }}"
+    public_client: true
+    standard_flow_enabled: true
+    redirect_uris: [ "https://{{ web_dns }}/*" ]
+    web_origins: [ "https://{{ web_dns }}" ]
+    default_client_scopes:
+    - "basic"
+    - "api-access"
+    - "profile"
+    - "email"
+    - "web-origins" # Added for CORS
+    - "microprofile-jwt" # Includes standard JWT claims like sub
+
+- name: Create PERMANENT Admin User
+  community.general.keycloak_user:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: master # <--- MUST be master for Super Admin
+    username: "{{ item.username }}"
+    email: "{{ item.email }}"
+    firstName: "{{ item.firstName }}"
+    lastName: "{{ item.lastName }}"
+    enabled: "{{ item.enabled }}"
+    state: present
+    credentials:
+    - type: password
+      value: "{{ item.password }}"
+      temporary: false
+  loop: "{{ keycloak_users }}"
+  when: item.is_admin | default(false)
+  no_log: true # Important: Prevents passwords from leaking in Ansible logs
+
+- name: Assign Super Admin permissions to the new adminuser
+  community.general.keycloak_user_rolemapping:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: master
+    target_username: "{{ item.username }}"
+    roles:
+    - name: admin
+    state: present
+  loop: "{{ keycloak_users }}"
+  no_log: true # Important: Prevents passwords from leaking in Ansible logs
+  when: item.is_admin | default(false)
+
+- name: Create users
+  community.general.keycloak_user:
+    auth_keycloak_url: "https://{{ keycloak_dns }}"
+    auth_realm: master
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ keycloak_realm }}"
+    state: present
+    username: "{{ item.username }}"
+    email: "{{ item.email }}"
+    firstName: "{{ item.firstName }}"
+    lastName: "{{ item.lastName }}"
+    enabled: "{{ item.enabled | default(true) }}"
+    credentials:
+    - type: password
+      value: "{{ item.password }}"
+      temporary: false
+  loop: "{{ keycloak_users }}"
+  no_log: true # Important: Prevents passwords from leaking in Ansible logs
+  when: not (item.is_admin | default(false))
