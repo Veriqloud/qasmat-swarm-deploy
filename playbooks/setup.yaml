@@ -19,7 +19,10 @@
 
 # Add qasmatuser, directories, node labels, secrets and configs
 - name: Add directories, permissions and node labels
-  hosts: all
+  hosts:
+  - proxy
+  - storage
+  - web
   become: true
   roles:
   - role: add_qasmatuser_dir

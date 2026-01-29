@@ -12,6 +12,7 @@ secrets:
 services:
   web-client:
     image: "{{ docker_images.repository }}/{{ docker_images.web.name }}:{{ docker_images.web.tag }}"
+    user: "10001:10001"
     depends_on:
       - proxy
     restart: 'unless-stopped'
@@ -30,7 +31,7 @@ services:
     deploy:
       placement:
        constraints:
-        - node.labels.service_role == web_server
+        - node.labels.web_server == true
 
   {{ storage1 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
@@ -126,7 +127,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.labels.service_role == proxy_server
+          - node.labels.proxy_server == true
     dns_search:
       - vq.local
     secrets:

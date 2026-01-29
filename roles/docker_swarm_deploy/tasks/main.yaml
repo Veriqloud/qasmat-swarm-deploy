@@ -5,7 +5,7 @@
     dest: /qasmat-swarm/docker-compose.yml
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode: "0755"
+    mode: "0700"
 - name: Deploy the Docker Swarm stack using command
   ansible.builtin.command: >
     docker stack deploy -c /qasmat-swarm/docker-compose.yml qasmat

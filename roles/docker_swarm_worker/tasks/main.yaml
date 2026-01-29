@@ -7,3 +7,4 @@
     remote_addrs: [ "{{ hostvars[groups['proxy'][0]]['ansible_host'] }}:2377" ]
   register: swarm_join
   changed_when: swarm_join.changed
+  throttle: 1

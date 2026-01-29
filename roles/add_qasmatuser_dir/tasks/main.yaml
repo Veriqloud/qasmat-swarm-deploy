@@ -5,6 +5,7 @@
     gid: "{{ qasmat_uid }}"
     state: present
     system: yes # Mark as a system group
+  throttle: 1
 
 - name: Create the unprivileged security user
   ansible.builtin.user:
@@ -15,6 +16,7 @@
     create_home: no
     system: yes # Mark as a system user
     state: present
+  throttle: 1
 
 - name: Create directories on proxy
   ansible.builtin.file:
