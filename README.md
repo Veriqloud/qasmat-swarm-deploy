@@ -7,10 +7,10 @@ The aim of this repository is to provide a way to deploy and test qasmat quickly
 
 ## Components of the application
 
-- Webapp is based on [Caddy webserver](https://caddyserver.com/). Public docker image is available on 🔗[Docker Hub](https://hub.docker.com/r/veriqloud/qasmat-web).
+- Webapp is based on [Caddy webserver](https://caddyserver.com/). Public docker image is available on 🔗[veriqloud/qasmat-web](https://hub.docker.com/r/veriqloud/qasmat-web).
 - Authentication with your own ID provider, OIDC-compatible, or a Keycloak instance
-- Proxy server for data dispatch. Public docker image is available on 🔗[Docker Hub](https://hub.docker.com/r/veriqloud/qasmat-proxy-lite).
-- Storage servers who store the shares of the data. Public docker image is available on 🔗[Docker Hub](https://hub.docker.com/r/veriqloud/qasmat-storage-lite).
+- Proxy server for data dispatch. Public docker image is available on 🔗[veriqloud/qasmat-proxy-lite](https://hub.docker.com/r/veriqloud/qasmat-proxy-lite).
+- Storage servers who store the shares of the data. Public docker image is available on 🔗[veriqloud/qasmat-storage-lite](https://hub.docker.com/r/veriqloud/qasmat-storage-lite).
 - Databases are set to default SQLite. PostgreSQL is coming soon.
 
 ## Prerequisites
@@ -26,7 +26,7 @@ Managed nodes in the inventory:
 
 DNS:
 - a domain name
-- two subdomains
+- 2 subdomains
 
 Authentication:
 - Either you have an identity provider setup as [described here](./authentication.md).
@@ -92,8 +92,12 @@ for example, given that certificates are copied to the server hosting the web se
 
 If you enable keycloak the default admin user is `qasmatadmin` password is `password`.
 
-### Note on usage
-
 The web interface will be accessible at `<web_dns>` provided in the customized `inventory.yaml`.
 
-To explore the logs ssh into the manager node (proxy) and hit `docker service logs qasmat_<service_name>` or `docker service inspect qasmat_<service_name>`.
+To explore the logs ssh into the manager node (proxy) and hit:
+```shell
+ docker service logs qasmat_<service_name>
+ docker service inspect qasmat_<service_name>
+ docker docker service ps qasmat_<service_name> --no-trunc
+```
+

@@ -64,12 +64,7 @@ Let `WURL` be the base URL where the web client is served.
 * **Redirect URI**:
 
   ```
-  WURL/callback
-  ```
-* **Post-logout redirect URI**:
-
-  ```
-  WURL
+  WURL/*
   ```
 * **Allowed origins / CORS**:
 
@@ -106,6 +101,8 @@ Each user should have:
 * A username (or email)
 * Credentials (password or external identity)
 * Optional roles or groups, if your authorization model requires them
+
+
 
 ---
 
