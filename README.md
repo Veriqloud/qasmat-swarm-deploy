@@ -98,6 +98,6 @@ To explore the logs ssh into the manager node (proxy) and hit:
 ```shell
  docker service logs qasmat_<service_name>
  docker service inspect qasmat_<service_name>
- docker docker service ps qasmat_<service_name> --no-trunc
+ docker service ps qasmat_<service_name> --no-trunc
 ```
 
