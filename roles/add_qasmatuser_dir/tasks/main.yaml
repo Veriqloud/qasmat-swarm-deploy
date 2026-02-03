@@ -51,7 +51,6 @@
     owner: "{{ qasmat_user }}"
     group: "{{ qasmat_user }}"
     mode: "0700"
-  # No curly braces here!
   when: inventory_hostname == item.hostname
   loop:
   - name: "{{ storage1 }}"

@@ -1,0 +1,35 @@
+---
+- name: Check local recovered source for host
+  ansible.builtin.stat:
+    path: "{{backup_data}}"
+  delegate_to: localhost
+  register: recovered_src_stat
+  become: false
+
+- name: Fail if no recovered data found
+  ansible.builtin.fail:
+    msg: "No recovered caddy data for {{ inventory_hostname }} at {{ backup_data }} on local machine."
+  when: not recovered_src_stat.stat.exists
+
+- name: Create temporary directory on remote host
+  ansible.builtin.file:
+    path: "{{ temp_data }}"
+    state: directory
+
+- name: Push recovered caddy data directly to final location
+  ansible.posix.synchronize:
+    src: "{{ backup_data }}/"
+    dest: "{{ cert_data }}/"
+    mode: push
+    rsync_path: "sudo rsync"
+  delegate_to: localhost
+  become: false
+
+- name: Restore ownership of cert data
+  ansible.builtin.file:
+    path: "{{ cert_data }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    recurse: true
+    mode: "0700"

@@ -1,0 +1,5 @@
+---
+cert_data: /caddy/data/
+backup_data: "~/recovered_caddy_data/"
+temp_data: "~/temp_data/"
+qasmat_user: "qasmatuser"
