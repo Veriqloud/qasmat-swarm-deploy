@@ -88,6 +88,8 @@ If self signed certificates are necessary instead of Let's encrypt certificates,
 ```
 for example, given that certificates are copied to the server hosting the web service to the folder `/caddy/data/certs/{{web_dns}}`; as `/caddy/data` folder is mounted to the container of the web service. It is possible to mount certificates elsewhere; the mount should be added to [docker compose template](roles/docker_swarm_deploy/templates/docker-compose.yml.j2).
 
+It is possible to mount backuped certificates or self signed certificates configured aboved. In the [inventory](inventory_template.yaml) fill the `backup_data` field with the path of the relevant folder.
+
 ### Note on usage
 
 If you enable keycloak the default admin user is `qasmatadmin` password is `password`.
@@ -100,4 +102,8 @@ To explore the logs ssh into the manager node (proxy) and hit:
  docker service inspect qasmat_<service_name>
  docker service ps qasmat_<service_name> --no-trunc
 ```
+### Note on security
+
+Each of the containers (with exception of keycloak) is launched with a low level system user `qasmatuser`. In [add_qasmatuser_dir](roles/add_qasmatuser_dir/tasks/main.yaml) this user is explicitly created on the relevant nodes and the related permissons are set to all mounted volumes and secrets.
+
 
