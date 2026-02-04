@@ -48,6 +48,13 @@
   roles:
   - role: add_web_config
 
+- name: Load ssl certificates
+  hosts: web
+  become: true
+  roles:
+  - role: restore_cert
+    when: backup_data is defined and backup_data != ""
+
 # Pull docker images and deploy the stack
 - name: Pull docker_images
   hosts:

@@ -36,8 +36,12 @@ all:
 
     # Domain names for the webapp, authentication and qasmat's api e.g. domain.com 
     # and subdomain.domain.com for web_dns/api_dns
+
     web_dns:
     api_dns:
+
+    # If you have reccovered/generated ssl certs for web and api, provide paths to cert and key files below, leave empty to use caddy automatic certs
+    backup_data:
 
     # If you wish to mount keycloack together with qasmat, please complete the followings, leave empty to skip keycloak deployment. 
 
@@ -60,11 +64,11 @@ all:
     docker_images:
       repository: docker.io/veriqloud
       web:
-        name: web-client
-        tag:
+        name: qasmat-web
+        tag: v0.12.0
       storage:
-        name: storage-server
-        tag:
+        name: qasmat-storage-lite
+        tag: v0.3.0
       proxy:
-        name: proxy-server
-        tag:
+        name: qasmat-proxy-lite
+        tag: v0.3.0

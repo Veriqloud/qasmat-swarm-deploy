@@ -38,4 +38,4 @@
   become: true
   roles:
   - role: keycloak
-    when: keycloak_dns is defined
+    when: keycloak_dns is defined and keycloak_dns != ""

@@ -1,6 +1,6 @@
 ---
 - name: Recover /caddy/data via rsync
-  synchronize:
+  ansible.posix.synchronize:
     src: "{{ cert_data }}"
     dest: "{{ backup_data }}"
     mode: pull

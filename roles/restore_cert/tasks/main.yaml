@@ -11,11 +11,6 @@
     msg: "No recovered caddy data for {{ inventory_hostname }} at {{ backup_data }} on local machine."
   when: not recovered_src_stat.stat.exists
 
-- name: Create temporary directory on remote host
-  ansible.builtin.file:
-    path: "{{ temp_data }}"
-    state: directory
-
 - name: Push recovered caddy data directly to final location
   ansible.posix.synchronize:
     src: "{{ backup_data }}/"

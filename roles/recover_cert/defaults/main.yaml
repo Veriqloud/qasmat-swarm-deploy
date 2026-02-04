@@ -1,3 +1,2 @@
 ---
 cert_data: /caddy/data/
-backup_data: "~/recovered_caddy_data/"
