@@ -74,7 +74,9 @@
     client_id: "{{ keycloak_web_client_id }}"
     public_client: true
     standard_flow_enabled: true
-    redirect_uris: [ "https://{{ web_dns }}/*" ]
+    redirect_uris:
+    - "https://{{ web_dns }}/*"
+    - "http://{{ web_dns }}/callback"
     web_origins: [ "https://{{ web_dns }}" ]
     default_client_scopes:
     - "basic"
