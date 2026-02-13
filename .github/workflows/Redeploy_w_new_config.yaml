@@ -43,9 +43,14 @@ jobs:
         echo "${{ secrets.SSH_PKEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         echo "StrictHostKeyChecking no" >> ~/.ssh/config
-        echo "${{ secrets.ANSIBLE_INVENTORY }}" > inventory.yaml
+    
+    - name: Create inventory file
+      env:
+        INVENTORY_DATA: ${{ secrets.ANSIBLE_INVENTORY }}
+      run: |
+        echo "$INVENTORY_DATA" > inventory.yaml
 
-    - name: Run Ansible Playbook with GitHub Secrets
+    - name: Run Ansible Playbook
       env:
         ANSIBLE_HOST_KEY_CHECKING: 'False'
       run: |
