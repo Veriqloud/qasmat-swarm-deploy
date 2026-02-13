@@ -46,6 +46,7 @@
     - docker-compose-plugin
     - python3-docker
     state: present
+  throttle: 1
 
 - name: Ensure Docker service is running
   ansible.builtin.service:

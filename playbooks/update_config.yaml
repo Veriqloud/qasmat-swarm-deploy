@@ -1,9 +1,0 @@
----
-- name: Add qasmat config
-  hosts:
-  - _master
-  - _worker
-  become: true
-  roles:
-  - role: add_qasmat_config
-  - role: add_web_config

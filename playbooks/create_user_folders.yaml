@@ -1,0 +1,21 @@
+---
+- name: Gather info from all nodes
+  hosts: all
+  gather_facts: true
+  become: true
+
+- name: Add directories, permissions and node labels
+  hosts:
+  - proxy
+  - storage
+  - web
+  become: true
+  roles:
+  - role: add_qasmatuser_dir
+  - role: add_nodelabels
+
+- name: Add secrets
+  hosts: proxy
+  become: true
+  roles:
+  - role: add_secrets

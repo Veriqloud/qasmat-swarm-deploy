@@ -1,0 +1,76 @@
+---
+- name: Ensure the unprivileged group exists
+  ansible.builtin.group:
+    name: "{{ qasmat_user }}"
+    gid: "{{ qasmat_uid }}"
+    state: present
+    system: yes # Mark as a system group
+  throttle: 1
+
+- name: Create the unprivileged security user
+  ansible.builtin.user:
+    name: "{{ qasmat_user }}"
+    uid: "{{ qasmat_uid }}"
+    group: "{{ qasmat_user }}"
+    shell: /sbin/nologin
+    create_home: no
+    system: yes # Mark as a system user
+    state: present
+  throttle: 1
+
+- name: Create directories on proxy
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
+  loop:
+  - /Qasmat
+  - /Qasmat/database
+  - /Qasmat/config
+  - /qasmat-swarm
+  when: "'proxy' in group_names"
+
+- name: Create directories on storage
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
+  loop:
+  - /Qasmat
+  - /Qasmat/config
+  when: "'storage' in group_names"
+
+- name: Create share_storage directories on respective storage nodes
+  ansible.builtin.file:
+    path: "/Qasmat/share_storage_{{ item.name }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
+  when: inventory_hostname == item.hostname
+  loop:
+  - name: "{{ storage1 }}"
+    hostname: "{{ groups['storage'][0] }}"
+  - name: "{{ storage2 }}"
+    hostname: "{{ groups['storage'][1] }}"
+  - name: "{{ storage3 }}"
+    hostname: "{{ groups['storage'][2] }}"
+
+- name: Create directories on web
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0700"
+  loop:
+  - /caddy
+  - /caddy/data
+  - /caddy/config
+  - /webclient
+  - /webclient/config
+  when: "'web' in group_names"

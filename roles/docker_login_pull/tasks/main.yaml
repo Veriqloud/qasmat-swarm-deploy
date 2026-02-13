@@ -5,13 +5,21 @@
     username: "{{ registry.username }}"
     password: "{{ registry.token }}"
   when: (registry.token is defined) and (registry.username is defined)
-- name: Pull images
+
+- name: Pull images - web
   community.docker.docker_image:
-    name: "{{ item }}"
+    name: "{{ docker_images.repository }}/{{ docker_images.web.name }}:{{ docker_images.web.tag }}"
     source: pull
-  loop:
-  - "{{ docker_images.repository }}/{{ docker_images.web.name }}:{{ docker_images.web.tag }}"
-  - "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
-  - "{{ docker_images.repository }}/{{ docker_images.proxy.name }}:{{ docker_images.proxy.tag }}"
-  - docker.io/authelia/authelia:latest
-  - redis:latest
+  when: "'web' in group_names"
+
+- name: Pull images - proxy
+  community.docker.docker_image:
+    name: "{{ docker_images.repository }}/{{ docker_images.proxy.name }}:{{ docker_images.proxy.tag }}"
+    source: pull
+  when: "'proxy' in group_names"
+
+- name: Pull images - storage
+  community.docker.docker_image:
+    name: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
+    source: pull
+  when: "'storage' in group_names"

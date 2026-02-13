@@ -1,0 +1,27 @@
+---
+- name: Label Swarm nodes based on inventory groups - web
+  community.docker.docker_node:
+    hostname: "{{ ansible_hostname }}"
+    labels:
+      web_server: "true"
+  delegate_to: "{{ groups['proxy'][0] }}"
+  throttle: 1
+  when: "'web' in group_names"
+
+- name: Label Swarm nodes based on inventory groups - proxy
+  community.docker.docker_node:
+    hostname: "{{ ansible_hostname }}"
+    labels:
+      proxy_server: "true"
+  delegate_to: "{{ groups['proxy'][0] }}"
+  throttle: 1
+  when: "'proxy' in group_names"
+
+- name: Label Swarm nodes based on inventory groups - storage
+  community.docker.docker_node:
+    hostname: "{{ ansible_hostname }}"
+    labels:
+      storage_server: "true"
+  delegate_to: "{{ groups['proxy'][0] }}"
+  throttle: 1
+  when: "'storage' in group_names"

@@ -1,0 +1,15 @@
+---
+- name: Setup docker-swarm master
+  hosts: proxy
+  become: true
+  roles:
+  - role: docker_swarm_master
+
+- name: Setup docker-swarm worker
+  hosts:
+  - storage
+  - web
+  - auth
+  become: true
+  roles:
+  - role: docker_swarm_worker

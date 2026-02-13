@@ -3,17 +3,9 @@
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: root
-    group: root
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: "0700"
   loop:
-  - src: redis_password.secret.j2
-    dest: /qasmat-swarm/redis_password.secret
-  - src: jwt.secret.j2
-    dest: /qasmat-swarm/jwt.secret
-  - src: session.secret.j2
-    dest: /qasmat-swarm/session.secret
-  - src: storage_encryption_key.secret.j2
-    dest: /qasmat-swarm/storage_encryption_key.secret
   - src: psk.secret.j2
     dest: /qasmat-swarm/psk.secret

@@ -1,0 +1,7 @@
+---
+- name: Restore certificates via rsync
+  gather_facts: true
+  become: true
+  hosts: web
+  roles:
+  - role: restore_cert

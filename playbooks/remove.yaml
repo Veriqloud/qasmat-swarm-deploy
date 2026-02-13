@@ -1,6 +1,6 @@
 ---
-- name: Deploy
-  hosts: _master
+- name: Remove stack
+  hosts: "{{ groups['proxy'][0] }}"
   become: true
   roles:
   - role: docker_swarm_remove

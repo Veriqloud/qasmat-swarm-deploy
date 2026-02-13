@@ -1,8 +1,0 @@
----
-- name: Setup docker-swarm master
-  hosts: _master
-  become: true
-  roles:
-  - role: add_qasmat_dir
-  - role: install
-  - role: docker_swarm_master
