@@ -1,0 +1,8 @@
+---
+- name: Copy license
+  ansible.builtin.copy:
+    src: "{{ license_path }}"
+    dest: "/Qasmat/license/{{ tier }}.lic"
+    owner: "{{ qasmat_user }}"
+    group: "{{ qasmat_user }}"
+    mode: "0644"

@@ -28,6 +28,7 @@
   loop:
   - /Qasmat
   - /Qasmat/database
+  - /Qasmat/license
   - /Qasmat/config
   - /qasmat-swarm
   when: "'proxy' in group_names"

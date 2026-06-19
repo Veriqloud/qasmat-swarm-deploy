@@ -18,6 +18,16 @@
   roles:
   - role: add_web_config
 
+- name: Add license
+  hosts:
+  - proxy
+  become: true
+  roles:
+  - role: add_license
+    when:
+    - license_path is defined and (license_path | default('', true) | length > 0)
+    - tier is defined and (tier | default('', true) | length > 0)
+
 - name: Pull docker_images
   hosts:
   - proxy

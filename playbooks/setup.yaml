@@ -53,7 +53,8 @@
   become: true
   roles:
   - role: restore_cert
-    when: backup_data is defined and backup_data != ""
+    when:
+    - backup_data is defined and (backup_data | default('', true) | length > 0)
 
 # Pull docker images and deploy the stack
 - name: Pull docker_images
@@ -76,4 +77,5 @@
   become: true
   roles:
   - role: keycloak
-    when: keycloak_dns is defined
+    when:
+    - keycloak_dns is defined and (keycloak_dns | default('', true) | length > 0)

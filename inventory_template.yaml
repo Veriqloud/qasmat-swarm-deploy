@@ -34,6 +34,9 @@ all:
     storage2:
     storage3:
 
+    license_path: # ./lite.lic
+    tier: # lite
+
     # Domain names for the webapp, authentication and qasmat's api e.g. domain.com 
     # and subdomain.domain.com for web_dns/api_dns
 
