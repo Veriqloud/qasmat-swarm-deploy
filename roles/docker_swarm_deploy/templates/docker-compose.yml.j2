@@ -122,6 +122,10 @@ services:
     volumes:
       - '/Qasmat/config:/Qasmat/config'
       - '/Qasmat/database:/Qasmat/database'
+{% if license_path and tier is defined %}
+      - '/Qasmat/license:/Qasmat/license'
+{% endif %}
+
     networks:
       - my-overlay-net
     deploy:
@@ -142,8 +146,8 @@ services:
       KC_HOSTNAME: "{{ keycloak_dns }}"
       KC_HTTP_ENABLED: "true"
       KC_HOSTNAME_STRICT: "true"
-      KC_PROXY_HEADERS: "xforwarded"
-      KC_PROXY: "edge"
+      KC_HOSTNAME_STRICT_BACK_CHANNEL: "false"
+      KC_PROXY_HEADERS: "xforwarded" 
       KC_BOOTSTRAP_ADMIN_USERNAME: "{{ keycloak_admin_user }}"
       KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
     networks:
