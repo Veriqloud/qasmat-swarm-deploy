@@ -119,6 +119,8 @@ services:
       - OIDC_ISSUER={{ oidc_issuer  }}
       - OIDC_CLIENT_ID={{ api_oidc_client_id  }}
     restart: 'unless-stopped'
+    extra_hosts:
+      - "{{ keycloak_dns }}:host-gateway"
     volumes:
       - '/Qasmat/config:/Qasmat/config'
       - '/Qasmat/database:/Qasmat/database'
