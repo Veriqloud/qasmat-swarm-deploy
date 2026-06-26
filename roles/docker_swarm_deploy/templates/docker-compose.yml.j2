@@ -1,38 +1,12 @@
 networks:
   my-overlay-net:
-    driver: overlay
-    attachable: true  # Allows standalone containers to attach to this network
-    driver_opts:
-      encrypted: ""
+    external: true
 
 secrets:
   PSK_SECRET:
     file: ./psk.secret
 
 services:
-  web-client:
-    image: "{{ docker_images.repository }}/{{ docker_images.web.name }}:{{ docker_images.web.tag }}"
-    user: "10001:10001"
-    depends_on:
-      - proxy
-    restart: 'unless-stopped'
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - 80:80
-      - 443:443
-      - 443:443/udp
-    volumes:
-      - '/caddy/config:/etc/caddy'
-      - '/caddy/data:/data'
-      - '/webclient/config:/srv/config'
-    networks:
-      - my-overlay-net
-    deploy:
-      placement:
-       constraints:
-        - node.labels.web_server == true
-
   {{ storage1 }}:
     image: "{{ docker_images.repository }}/{{ docker_images.storage.name }}:{{ docker_images.storage.tag }}"
     user: "10001:10001"
@@ -139,26 +113,3 @@ services:
     secrets:
       - source: PSK_SECRET
         target: /Qasmat/secret
-
-{% if keycloak_dns is defined %}
-  keycloak:
-    image: quay.io/keycloak/keycloak
-    command: start
-    environment:
-      KC_HOSTNAME: "{{ keycloak_dns }}"
-      KC_HTTP_ENABLED: "true"
-      KC_HOSTNAME_STRICT: "true"
-      KC_HOSTNAME_STRICT_BACK_CHANNEL: "false"
-      KC_PROXY_HEADERS: "xforwarded" 
-      KC_BOOTSTRAP_ADMIN_USERNAME: "{{ keycloak_admin_user }}"
-      KC_BOOTSTRAP_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
-    networks:
-      - my-overlay-net
-    restart: always
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == {{ hostvars['keycloak']['ansible_hostname'] }}
-    expose:
-      - "8080"
-{% endif %}

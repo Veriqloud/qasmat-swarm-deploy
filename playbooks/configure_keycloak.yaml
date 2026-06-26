@@ -1,6 +1,0 @@
----
-- name: Configure Keycloak (conditional)
-  hosts: web
-  become: true
-  roles:
-  - role: keycloak

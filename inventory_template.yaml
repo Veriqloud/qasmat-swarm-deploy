@@ -53,6 +53,7 @@ all:
 
     keycloak_admin_user: admin
     keycloak_admin_password: admin
+    keycloak_db_password: changeme # Database password for production-grade Keycloak PostgreSQL DB
 
     keycloak_realm: myrealm
     keycloak_api_client_id: api

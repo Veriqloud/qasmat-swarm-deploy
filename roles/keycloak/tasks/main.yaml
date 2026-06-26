@@ -1,4 +1,63 @@
 ---
+- name: Create Keycloak and Postgres directories on keycloak host
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode | default('0700') }}"
+  loop:
+    - { path: '/keycloak', owner: "{{ qasmat_user }}", group: "{{ qasmat_user }}" }
+    - { path: '/keycloak/postgres_data', owner: '999', group: '999' }
+
+- name: Copy docker-compose-db.yml to Swarm Manager
+  ansible.builtin.template:
+    src: docker-compose-db.yml.j2
+    dest: /qasmat-swarm/docker-compose-db.yml
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0700"
+  delegate_to: "{{ groups['proxy'][0] }}"
+
+- name: Deploy Keycloak Database Stack
+  ansible.builtin.command: >
+    docker stack deploy -c /qasmat-swarm/docker-compose-db.yml keycloak-db
+  delegate_to: "{{ groups['proxy'][0] }}"
+
+- name: Wait for PostgreSQL service to be running in Swarm
+  ansible.builtin.shell: >
+    docker service ps keycloak-db_keycloak-db --filter "desired-state=running" --format '{{ '{{' }}.CurrentState{{ '}}' }}'
+  register: pg_status
+  until: pg_status.stdout is search('Running') or pg_status.stdout is search('running')
+  retries: 24
+  delay: 5
+  changed_when: false
+  delegate_to: "{{ groups['proxy'][0] }}"
+
+- name: Copy docker-compose-keycloak.yml to Swarm Manager
+  ansible.builtin.template:
+    src: docker-compose-keycloak.yml.j2
+    dest: /qasmat-swarm/docker-compose-keycloak.yml
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0700"
+  delegate_to: "{{ groups['proxy'][0] }}"
+
+- name: Deploy Keycloak Stack
+  ansible.builtin.command: >
+    docker stack deploy -c /qasmat-swarm/docker-compose-keycloak.yml keycloak
+  delegate_to: "{{ groups['proxy'][0] }}"
+
+- name: Wait for Keycloak service to be running in Swarm
+  ansible.builtin.shell: >
+    docker service ps keycloak_keycloak --filter "desired-state=running" --format '{{ '{{' }}.CurrentState{{ '}}' }}'
+  register: kc_status
+  until: kc_status.stdout is search('Running') or kc_status.stdout is search('running')
+  retries: 30
+  delay: 5
+  changed_when: false
+  delegate_to: "{{ groups['proxy'][0] }}"
+
 - name: Wait for Keycloak to become available
   uri:
     url: "https://{{ keycloak_dns }}"
