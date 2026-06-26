@@ -1,6 +1,7 @@
 
 {{ api_dns }} {
-    reverse_proxy proxy:3000 
+    vars proxy_upstream proxy:3000
+    reverse_proxy {vars.proxy_upstream}
 }
 
 {{ web_dns }} {
@@ -14,10 +15,11 @@
 
 {% if keycloak_dns is defined %}
 {{ keycloak_dns }} {
-    reverse_proxy keycloak:8080 {
+    vars keycloak_upstream keycloak_keycloak:8080
+    reverse_proxy {vars.keycloak_upstream} {
         header_up X-Forwarded-Proto https
         header_up X-Forwarded-Host {host}
         header_up X-Forwarded-For {remote}
     }
 }
-{% endif  %}
+{% endif %}

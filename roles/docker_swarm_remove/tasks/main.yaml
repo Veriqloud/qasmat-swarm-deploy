@@ -1,4 +1,5 @@
 ---
-- name: Remove the Docker Swarm stack using command
+- name: Remove the Docker Swarm stacks using command
   ansible.builtin.command: >
-    docker stack rm qasmat
+    docker stack rm qasmat web-client keycloak keycloak-db
+  failed_when: false

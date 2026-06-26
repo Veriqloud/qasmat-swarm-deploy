@@ -66,16 +66,22 @@
   roles:
   - role: docker_login_pull
 
-- name: Deploy the docker-swarm stack
+- name: Deploy the Web Client Stack
   hosts: "{{ groups['proxy'][0] }}"
   become: true
   roles:
-  - role: docker_swarm_deploy
+  - role: web_client_deploy
 
-- name: Configure Keycloak (conditional)
+- name: Deploy and configure Keycloak (conditional)
   hosts: keycloak
   become: true
   roles:
   - role: keycloak
     when:
     - keycloak_dns is defined and (keycloak_dns | default('', true) | length > 0)
+
+- name: Deploy the docker-swarm stack
+  hosts: "{{ groups['proxy'][0] }}"
+  become: true
+  roles:
+  - role: docker_swarm_deploy

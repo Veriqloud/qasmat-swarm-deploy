@@ -1,0 +1,11 @@
+---
+- name: Gather info from all nodes
+  hosts: all
+  gather_facts: true
+  become: true
+
+- name: Configure Keycloak (conditional)
+  hosts: keycloak
+  become: true
+  roles:
+  - role: keycloak

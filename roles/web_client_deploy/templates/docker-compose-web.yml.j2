@@ -1,0 +1,25 @@
+networks:
+  my-overlay-net:
+    external: true
+
+services:
+  web-client:
+    image: "{{ docker_images.repository }}/{{ docker_images.web.name }}:{{ docker_images.web.tag }}"
+    user: "10001:10001"
+    restart: 'unless-stopped'
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    volumes:
+      - '/caddy/config:/etc/caddy'
+      - '/caddy/data:/data'
+      - '/webclient/config:/srv/config'
+    networks:
+      - my-overlay-net
+    deploy:
+      placement:
+        constraints:
+          - node.labels.web_server == true
