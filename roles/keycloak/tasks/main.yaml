@@ -7,8 +7,8 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode | default('0700') }}"
   loop:
-    - { path: '/keycloak', owner: "{{ qasmat_user }}", group: "{{ qasmat_user }}" }
-    - { path: '/keycloak/postgres_data', owner: '999', group: '999' }
+  - { path: '/keycloak', owner: "{{ ansible_user }}", group: "{{ ansible_user }}" }
+  - { path: '/keycloak/postgres_data', owner: '999', group: '999' }
 
 - name: Copy docker-compose-db.yml to Swarm Manager
   ansible.builtin.template:

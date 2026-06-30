@@ -1,8 +1,8 @@
-# Progress Summary: Swarm Deployment Architecture Refactoring
+# Swarm Deployment Architecture Refactoring
 
 This document outlines the final, highly consolidated and simplified architecture implemented to split the Docker Swarm deployment, secure the overlay network, and elevate Keycloak to a production-grade setup.
 
-## Key Changes Implemented
+## Implementation Details
 
 ### 1. Unified `keycloak` Role (Infrastructure + Configuration)
 With write access enabled, the infrastructure deployment tasks and configuration tasks have been fully merged into the official **`keycloak`** role (`roles/keycloak/`). 
