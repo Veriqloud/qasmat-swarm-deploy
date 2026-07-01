@@ -4,13 +4,13 @@ networks:
 
 services:
   keycloak-db:
-    image: postgres:16
+    image: postgres:18
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: "{{ keycloak_db_password | default('keycloak_db_pass_change_me') }}"
     volumes:
-      - '/keycloak/postgres_data:/var/lib/postgresql/data'
+      - '/keycloak/postgres_data:/var/lib/postgresql'
     networks:
       - my-overlay-net
     restart: always
