@@ -1,7 +1,19 @@
 
 {{ api_dns }} {
-    vars proxy_upstream proxy:3000
-    reverse_proxy {vars.proxy_upstream}
+    vars proxy_upstream qasmat_proxy:3000
+    reverse_proxy {vars.proxy_upstream} {
+        # 1. Keep retrying for up to 60 seconds total
+        lb_try_duration 60s
+        lb_try_interval 1s
+
+        # 2. Prevent Caddy from marking the service as permanently dead
+        max_fails 0
+
+        transport http {
+            # Fail fast on a closed port so it loops quickly
+            dial_timeout 1s
+        }
+    }
 }
 
 {{ web_dns }} {
@@ -17,6 +29,17 @@
 {{ keycloak_dns }} {
     vars keycloak_upstream keycloak_keycloak:8080
     reverse_proxy {vars.keycloak_upstream} {
+        # 1. Keep retrying Keycloak for up to 60 seconds total
+        lb_try_duration 60s
+        lb_try_interval 1s
+
+        # 2. Prevent blacklisting
+        max_fails 0
+
+        transport http {
+            dial_timeout 1s
+        }
+
         header_up X-Forwarded-Proto https
         header_up X-Forwarded-Host {host}
         header_up X-Forwarded-For {remote}

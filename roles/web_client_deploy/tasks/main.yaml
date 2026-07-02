@@ -6,7 +6,7 @@
   changed_when: false
 
 - name: Create overlay network 'my-overlay-net' if it does not exist
-  ansible.builtin.command: docker network create --driver=overlay --attachable --opt encrypted my-overlay-net
+  ansible.builtin.command: docker network create --driver=overlay --attachable --opt encrypted --opt mtu=1400 my-overlay-net
   when: network_check.rc != 0
 
 - name: Copy web-client docker-compose.yml
