@@ -94,14 +94,13 @@ services:
       - OIDC_CLIENT_ID={{ api_oidc_client_id  }}
     restart: 'unless-stopped'
     extra_hosts:
-      - "{{ keycloak_dns }}:host-gateway"
+      - "{{ keycloak_dns }}:{{ hostvars['keycloak']['ansible_host'] }}"
     volumes:
       - '/Qasmat/config:/Qasmat/config'
       - '/Qasmat/database:/Qasmat/database'
 {% if license_path and tier is defined %}
       - '/Qasmat/license:/Qasmat/license'
 {% endif %}
-
     networks:
       - my-overlay-net
     deploy:
