@@ -39,10 +39,6 @@
         transport http {
             dial_timeout 1s
         }
-
-        header_up X-Forwarded-Proto https
-        header_up X-Forwarded-Host {host}
-        header_up X-Forwarded-For {remote}
     }
 }
 {% endif %}
