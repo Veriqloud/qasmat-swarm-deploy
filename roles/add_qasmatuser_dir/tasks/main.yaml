@@ -24,7 +24,7 @@
     state: directory
     owner: "{{ qasmat_user }}"
     group: "{{ qasmat_user }}"
-    mode: "0700"
+    mode: "0770"
   loop:
   - /Qasmat
   - /Qasmat/database
@@ -39,7 +39,7 @@
     state: directory
     owner: "{{ qasmat_user }}"
     group: "{{ qasmat_user }}"
-    mode: "0700"
+    mode: "0770"
   loop:
   - /Qasmat
   - /Qasmat/config
@@ -51,7 +51,7 @@
     state: directory
     owner: "{{ qasmat_user }}"
     group: "{{ qasmat_user }}"
-    mode: "0700"
+    mode: "0770"
   when: inventory_hostname == item.hostname
   loop:
   - name: "{{ storage1 }}"
@@ -67,7 +67,7 @@
     state: directory
     owner: "{{ qasmat_user }}"
     group: "{{ qasmat_user }}"
-    mode: "0700"
+    mode: "0770"
   loop:
   - /caddy
   - /caddy/data

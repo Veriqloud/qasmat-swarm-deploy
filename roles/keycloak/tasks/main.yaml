@@ -5,7 +5,7 @@
     state: directory
     owner: "{{ item.owner }}"
     group: "{{ item.group }}"
-    mode: "{{ item.mode | default('0700') }}"
+    mode: "{{ item.mode | default('0770') }}"
   loop:
   - { path: '/keycloak', owner: "{{ ansible_user }}", group: "{{ ansible_user }}" }
   - { path: '/keycloak/postgres_data', owner: '999', group: '999' }
@@ -16,7 +16,7 @@
     dest: /qasmat-swarm/docker-compose-db.yml
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode: "0700"
+    mode: "0770"
   delegate_to: "{{ groups['proxy'][0] }}"
 
 - name: Deploy Keycloak Database Stack
@@ -40,7 +40,7 @@
     dest: /qasmat-swarm/docker-compose-keycloak.yml
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode: "0700"
+    mode: "0770"
   delegate_to: "{{ groups['proxy'][0] }}"
 
 - name: Deploy Keycloak Stack
