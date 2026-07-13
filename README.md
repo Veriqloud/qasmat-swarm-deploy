@@ -90,6 +90,14 @@ for example, given that certificates are copied to the server hosting the web se
 
 It is possible to mount backuped certificates or self signed certificates configured aboved. In the [inventory](inventory_template.yaml) fill the `backup_data` field with the path of the relevant folder.
 
+---
+### Note on license
+
+A license is required to run the services. Configure your license settings in `inventory.yaml` as shown in the template:
+- Indicate the local path to your license file with `license_path: # ./lite.lic`
+- Indicate the license tier with `tier: # lite`
+
+---
 ### Note on usage
 
 If you enable keycloak the default admin user is `qasmatadmin` password is `password`.
